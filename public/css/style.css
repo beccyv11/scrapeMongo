@@ -1,0 +1,18 @@
+.display-4 {
+  text-align: center;
+  opacity: 1;
+}
+
+.jumbotron {
+  background-image: url("../images/bball.jpg");
+  background-size: cover;
+  height: 500px;
+}
+
+.articleContainer {
+  margin: 10px;
+}
+
+#save {
+  float: right;
+}
