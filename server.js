@@ -9,7 +9,7 @@ var axios = require("axios");
 var cheerio = require("cheerio");
 
 // Require all models
-// var db = require("./models");
+var db = require("./models");
 
 var PORT = 3000;
 
@@ -25,9 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
-const exphbs = require("express-handlebars");
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+// const exphbs = require("express-handlebars");
+// app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+// app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/mongoHeadlines", {
@@ -43,26 +43,36 @@ app.get("/scrape", function(req, res) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
-    // Now, we grab every h2 within an article tag, and do the following:
-    $(".contentItem").each(function(i, element) {
-      // Save an empty result object
-      var result = {};
+    // An empty array to save the data that we'll scrape
+    var result = {};
 
-      // Add the text and href of every link, and save them as properties of the result object
-      result.header = $(this)
-        .children("a")
+    // Select each element in the HTML body from which you want information.
+    // NOTE: Cheerio selectors function similarly to jQuery's selectors,
+    // but be sure to visit the package's npm page to see how it works
+    $("article.contentItem").each(function(i, element) {
+      // var gameData = $(element).text();
+
+      result.title = $(this)
+        .find("h1")
         .text();
-      result.section.figure.picture = $(this)
-        .children("a")
+
+      result.summary = $(this)
+        .find("p")
+        .text();
+
+      result.link = $(this)
+        .find("a")
         .attr("href");
 
-      result.section.figure.source = $(this)
-        .children("a")
-        .attr("href");
+      result.image = $(this)
+        .find("figure")
+        .find("picture")
+        .find("img")
+        .attr("data-default-src");
+
+      console.log(result);
 
       // Create a new Article using the `result` object built from scraping
-
-      console.log(response);
       db.Article.create(result)
         .then(function(dbArticle) {
           // View the added result in the console
@@ -80,7 +90,7 @@ app.get("/scrape", function(req, res) {
 });
 
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index.html");
 });
 
 // Route for getting all Articles from the db
