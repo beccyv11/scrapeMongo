@@ -24,13 +24,14 @@ $(document).ready(function() {
   // and "scrape new article" buttons
   var articleContainer = $(".articleContainer");
   $(document).on("click", "#saveArticle", articleSave);
-  $("scrapeArticle").on("click", articleScrape);
+  // $("#scrapeArticle").on("click", articleScrape);
   console.log("scrape Success");
-  $(".clear-btn").on("click", articleClear);
+  // $(".clear-btn").on("click", articleClear);
 
   function initPage() {
     // Run an AJAX request for any unsaved headlines
-    $.get("/api/headlines?saved=false").then(function(data) {
+    $.get("/api/articles?saved=false").then(function(data) {
+      console.log("init");
       articleContainer.empty();
       // If we have headlines, render them to the page
       if (data && data.length) {
@@ -131,21 +132,22 @@ $(document).ready(function() {
     });
   }
 
-  function articleScrape() {
-    // This function handles the user clicking any "scrape new article" buttons
-    $.get("/api/scrape").then(function(data) {
-      // If we are able to successfully scrape the NYTIMES and compare the articles to those
-      // already in our collection, re render the articles on the page
-      // and let the user know how many unique articles we were able to save
-      initPage();
-      bootbox.alert($("<h3 class='text-center m-top-80'>").text(data.message));
-    });
-  }
+  // function articleScrape() {
+  //   // This function handles the user clicking any "scrape new article" buttons
+  //   $.get("/api/scrape").then(function(data) {
+  //     // If we are able to successfully scrape the NYTIMES and compare the articles to those
+  //     // already in our collection, re render the articles on the page
+  //     // and let the user know how many unique articles we were able to save
+  //     initPage();
+  //     bootbox.alert($("<h3 class='text-center m-top-80'>").text(data.message));
+  //   });
+  // }
 
-  function articleClear() {
-    $.get("/api/clear").then(function() {
-      articleContainer.empty();
-      initPage();
-    });
-  }
+  // function articleClear() {
+  //   $.get("/clear").then(function() {
+  //     articleContainer.empty();
+  //     console.log("article cleared");
+  //     initPage();
+  //   });
+  // }
 });

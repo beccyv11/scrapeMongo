@@ -37,14 +37,14 @@ mongoose.connect("mongodb://localhost/mongoHeadlines", {
 // Routes
 
 // A GET route for scraping the echoJS website
-app.get("/api/scrape", function(req, res) {
+app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://www.espn.com/nba/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // An empty array to save the data that we'll scrape
-    var result = {};
+    var result = [];
 
     // Select each element in the HTML body from which you want information.
     // NOTE: Cheerio selectors function similarly to jQuery's selectors,
@@ -52,45 +52,53 @@ app.get("/api/scrape", function(req, res) {
     $("article.contentItem").each(function(i, element) {
       // var gameData = $(element).text();
 
-      result.title = $(this)
+      const content = {};
+
+      content.title = $(this)
         .find("h1")
         .text();
 
-      result.summary = $(this)
+      content.summary = $(this)
         .find("p")
         .text();
 
-      result.link = $(this)
+      content.link = $(this)
         .find("a")
         .attr("href");
 
-      result.image = $(this)
+      content.image = $(this)
         .find("figure")
         .find("picture")
         .find("img")
         .attr("data-default-src");
 
-      console.log(result);
-
-      // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
-        .then(function(dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
-        })
-        .catch(function(err) {
-          // If an error occurred, log it
-          console.log(err);
-        });
+      console.log(content);
+      result.push(content);
+      console.log("scrape");
     });
-
+    // Create a new Article using the `result` object built from scraping
+    db.Article.create(result)
+      .then(function(dbArticle) {
+        // View the added result in the console
+        console.log(dbArticle);
+        res.redirect("/");
+      })
+      .catch(function(err) {
+        // If an error occurred, log it
+        console.log(err);
+      });
     // Send a message to the client
-    res.send("Scrape Complete");
   });
 });
 
 app.get("/", (req, res) => {
   res.render("index.html");
+});
+
+app.get("/clear", (req, res) => {
+  db.Article.remove({}).then(function(err) {
+    res.redirect("/");
+  });
 });
 
 // Route for getting all Articles from the db
