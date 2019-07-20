@@ -37,7 +37,7 @@ mongoose.connect("mongodb://localhost/mongoHeadlines", {
 // Routes
 
 // A GET route for scraping the echoJS website
-app.get("/scrape", function(req, res) {
+app.get("/api/scrape", function(req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://www.espn.com/nba/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -94,7 +94,7 @@ app.get("/", (req, res) => {
 });
 
 // Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
+app.get("/api/articles", function(req, res) {
   // TODO: Finish the route so it grabs all of the articles
   db.Article.find({})
     .then(function(dbArticle) {
@@ -106,7 +106,7 @@ app.get("/articles", function(req, res) {
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
-app.get("/articles/:id", function(req, res) {
+app.get("/api/articles/:id", function(req, res) {
   // TODO
   // ====
   db.Article.findOne({ _id: req.params.id })
@@ -123,7 +123,7 @@ app.get("/articles/:id", function(req, res) {
 });
 
 // Route for saving/updating an Article's associated Note
-app.post("/articles/:id", function(req, res) {
+app.post("/api/articles/:id", function(req, res) {
   // TODO
   // ====
   db.Note.create(req.body)
