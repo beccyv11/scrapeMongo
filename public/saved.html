@@ -18,17 +18,19 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="">Saved Articles</a>
-          </div>
-      </nav>
+  <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-item nav-link" href="/saved.html">Saved Articles</a>
+        <a type="button" href="/scrape" class="btn btn-info save-new" id="scrapeArticle">SCRAPE ARTICLES</a>
+        <a type="button" href="/clear" class="btn btn-secondary clear-btn" id="clear">CLEAR ARTICLES!</a>
+      </div>
+  </nav>
 
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -40,6 +42,25 @@
         
           <div class="savedArticleContainer">
           <!--Too add dynamically created elements from scraped articles-->
+
+          <!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="modalNotes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Notes</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
           </div>
       </div>
 </body>
@@ -58,7 +79,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<script src="app.js"></script>
+<script src="saved.js"></script>
 
 </body>
 

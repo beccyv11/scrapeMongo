@@ -13,7 +13,29 @@
   margin: 10px;
 }
 
-.save-article {
+#save {
   float: right;
-  width: 100px;
+  width: 200px;
+  margin: 10px;
+  background-color: #e3f2fd;
+  color: black;
+}
+
+.card-header {
+  font-display: bold;
+  font-size: 20px;
+}
+
+.card {
+  margin: 10px;
+}
+
+.delete-article {
+  margin: 10px;
+  background-color: #e3f2fd;
+}
+
+.add-note {
+  margin: 10px;
+  background-color: #e3f2fd;
 }

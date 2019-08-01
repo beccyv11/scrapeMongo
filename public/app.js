@@ -1,47 +1,55 @@
 // Grab the articles as a json
-$.getJSON("/api/articles", function(data) {
-  // For each one
-  for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    $(".articleContainer").append(
-      "<div class='card' data-id='" +
-        data[i]._id +
-        "'>" +
-        "<div class = 'card-header'>" +
-        data[i].title +
-        "</div>" +
-        "<div class='card-body'> </div> <h5 class='card-title'>" +
-        data[i].summary +
-        "</h5>" +
-        "<a href='#' class='btn btn-primary' id='save'>Save Article</a> </div> </div>"
-    );
-  }
-});
 
 $(document).ready(function() {
+  $.getJSON("/api/articles", function(data) {
+    // For each one
+    for (var i = 0; i < data.length; i++) {
+      // Display the apropos information on the page
+      // $(".articleContainer").append(
+      //   "<div class='card' data-id='" +
+      //     data[i]._id +
+      //     "'>" +
+      //     "<div class = 'card-header'>" +
+      //     data[i].title +
+      //     "</div>" +
+      //     "<div class='card-body'> </div> <p class='card-title'>" +
+      //     data[i].summary +
+      //     "</p>" +
+      //     "<a href= https://www.espn.com" +
+      //     data[i].link +
+      //     "target='_blank'>" +
+      //     data[i].link +
+      //     "</a>" +
+      //     "<button type='button' class='btn btn-success save' id='save' data-id= " +
+      //     data[i]._id +
+      //     ">Save Article</button>"
+      // );
+      $(".articleContainer").append(createCard(data[i]));
+    }
+  });
   // Setting a reference to the article-container div where all the dynamic content will go
   // Adding event listeners to any dynamically generated "save article"
   // and "scrape new article" buttons
   var articleContainer = $(".articleContainer");
-  $(document).on("click", "#saveArticle", articleSave);
+  $(document).on("click", "#save", articleSave);
   // $("#scrapeArticle").on("click", articleScrape);
   console.log("scrape Success");
   // $(".clear-btn").on("click", articleClear);
 
-  function initPage() {
-    // Run an AJAX request for any unsaved headlines
-    $.get("/api/articles?saved=false").then(function(data) {
-      console.log("init");
-      articleContainer.empty();
-      // If we have headlines, render them to the page
-      if (data && data.length) {
-        getArticles(data);
-      } else {
-        // Otherwise render a message explaining we have no articles
-        renderEmpty();
-      }
-    });
-  }
+  // function initPage() {
+  //   // Run an AJAX request for any unsaved headlines
+  //   $.get("/api/articles?saved=false").then(function(data) {
+  //     console.log("init");
+  //     articleContainer.empty();
+  //     // If we have headlines, render them to the page
+  //     if (data && data.length) {
+  //       getArticles(data);
+  //     } else {
+  //       // Otherwise render a message explaining we have no articles
+  //       renderEmpty();
+  //     }
+  //   });
+  // }
 
   function getArticles(articles) {
     // This function handles appending HTML containing our article data to the page
@@ -58,16 +66,21 @@ $(document).ready(function() {
   }
 
   function createCard(article) {
+    console.log(article._id);
     // This function takes in a single JSON object for an article/headline
     // It constructs a jQuery element containing all of the formatted HTML for the
     // article card
-    var card = $("<div class='card'>");
+    var card = $("<div class='card' data-id=" + article._id + ">");
     var cardHeader = $("<div class='card-header'>").append(
       $("<h3>").append(
         $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
-          .attr("href", article.link)
+          .attr("href", "https://www.espn.com" + article.link)
           .text(article.title),
-        $("<a class='btn btn-primary save-article'> Save Article </a>")
+        $(
+          "<button type='button' class='btn btn-success save' id='save' data-id=" +
+            article._id +
+            ">Save Article </button>"
+        )
       )
     );
 
@@ -121,8 +134,7 @@ $(document).ready(function() {
     // Using a patch method to be semantic since this is an update to an existing record in our collection
     $.ajax({
       method: "PUT",
-      url: "/api/articles/" + articleSave._id,
-      data: articleSave
+      url: "/api/articles/" + articleSave.id + "/save"
     }).then(function(data) {
       // If the data was saved successfully
       if (data.saved) {

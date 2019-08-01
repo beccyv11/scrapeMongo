@@ -26,8 +26,6 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 // const exphbs = require("express-handlebars");
-// app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-// app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/mongoHeadlines", {
@@ -91,9 +89,20 @@ app.get("/scrape", function(req, res) {
   });
 });
 
-app.get("/", (req, res) => {
-  res.render("index.html");
-});
+// app.get("/", (req, res) => {
+//   res.render("index.html");
+// });
+
+// app.get("/api/articles/save", function(req, res) {
+//   // TODO: Finish the route so it grabs all of the articles
+//   db.Article.find({})
+//     .then(function(dbArticle) {
+//       res.json(dbArticle);
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//     });
+// });
 
 app.get("/clear", (req, res) => {
   db.Article.remove({}).then(function(err) {
@@ -103,8 +112,10 @@ app.get("/clear", (req, res) => {
 
 // Route for getting all Articles from the db
 app.get("/api/articles", function(req, res) {
+  const saved = req.query.saved === "true" ? true : false;
+  console.log("hello", saved, typeof saved);
   // TODO: Finish the route so it grabs all of the articles
-  db.Article.find({})
+  db.Article.find({ saved: saved })
     .then(function(dbArticle) {
       res.json(dbArticle);
     })
@@ -130,13 +141,39 @@ app.get("/api/articles/:id", function(req, res) {
   // then responds with the article with the note included
 });
 
-// Route for saving/updating an Article's associated Note
-app.post("/api/articles/:id", function(req, res) {
+app.delete("/api/articles/:id", function(req, res) {
   // TODO
   // ====
+  db.Article.remove({ _id: req.params.id })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+  // Finish the route so it finds one article using the req.params.id,
+  // and run the populate method with "note",
+  // then responds with the article with the note included
+});
+
+app.put("/api/articles/:id/save", function(req, res) {
+  db.Article.updateOne({ _id: req.params.id }, { saved: true })
+    .then(function(dbArticle) {
+      console.log("saved?", dbArticle);
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+// Route for saving/updating an Article's associated Note
+app.post("/api/articles/:id/notes", function(req, res) {
+  console.log(req.params.id, req.body);
   db.Note.create(req.body)
     .then(function(dbNote) {
-      return dbArticle.findOneAndUpdate(
+      console.log(dbNote);
+      return db.Article.findOneAndUpdate(
         { _id: req.params.id },
         { note: dbNote._id },
         { new: true }
